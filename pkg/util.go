@@ -2,16 +2,30 @@ package pkg
 
 import (
 	"fmt"
+	"math/rand"
 	"net/url"
 	"regexp"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 )
 
 var validate *validator.Validate
+var randomizer *rand.Rand
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+var lengthLetters = len(letters)
 func init() {
 	validate = validator.New(validator.WithRequiredStructEnabled())
+	randomizer = rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
+}
+
+func RandomString(length int) string {
+	b := make([]rune, length)
+	for i := range b{
+		b[i] = letters[randomizer.Intn(lengthLetters)]
+	}
+	return string(b)
 }
 
 func ValidateOne(data string, rules string) error {

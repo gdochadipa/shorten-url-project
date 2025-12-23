@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/rand"
 	"database/sql"
-	"encoding/base64"
 	"fmt"
 	"strings"
 	"time"
@@ -13,6 +12,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/ochadipa/url-shorterner-project/internal/db"
 	"github.com/ochadipa/url-shorterner-project/internal/model"
+	"github.com/ochadipa/url-shorterner-project/pkg"
 	"go.uber.org/zap"
 )
 
@@ -42,7 +42,7 @@ func (u *UrlRepository) StoreUrl(ctx context.Context,uri  string) (*string, erro
 			continue
 		}
 
-		shortURL = base64.URLEncoding.EncodeToString(randomBytes)
+		shortURL = pkg.RandomString(5)
 		sql, args, err := query.Insert(tableName).
 			Columns("id", "url", "created_at", "updated_at").
 			Values(shortURL, uri, now, now).
@@ -88,11 +88,6 @@ func (u *UrlRepository) GetUrl(ctx context.Context, id string) (*model.Url, erro
 
 	query := squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
 
-	// sql, args, err := sq.Insert(tableName).
-	// 	Columns("id", "url", "create_at", "update_at").
-	// 	Values(shortURL, uri, now, now).
-	// 	PlaceholderFormat(sq.Dollar).
-	// 	ToSql()
 	sql, args, err := query.Select("*").From(tableName).Where(squirrel.Eq{"id": id}).Limit(1).ToSql()
 
 	if err != nil {
