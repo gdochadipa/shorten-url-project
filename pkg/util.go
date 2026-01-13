@@ -13,7 +13,7 @@ import (
 
 var validate *validator.Validate
 var randomizer *rand.Rand
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 var lengthLetters = len(letters)
 func init() {
 	validate = validator.New(validator.WithRequiredStructEnabled())
